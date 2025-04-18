@@ -1,6 +1,9 @@
 # Observer Log :eyes:
 
-Event logger based on system day. Simple and easy to extract.
+Daily logger. 
+
+## Log Format
+Format: ```obs_YYYY-MM-DD.log``` Regex: ```'obs_[0-9]{1,4}_[0-9]{1,2}_[0-9]{1,2}.log'```
 
 ## Usage
 
@@ -16,8 +19,8 @@ void main() async {
   String logPath = join(appDocumentsDir.path, 'logs/');
   
   Ob.applyConfig(
-      path: logPath,
-      limit: 5 
+    path: logPath, // Log store path
+    limit: 5       // How many days or how many log files should be kept?
   );
   
   runApp(const MyApp());
@@ -33,7 +36,6 @@ Ob.log("Example of log lorem ipsum");
 ```dart
 List<ObFile> files = await Ob.listFiles();
 
-// 
 for(ObFile file in files) {
   print(file.toString());
 }

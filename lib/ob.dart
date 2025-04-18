@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:observer_log/observer/ObserverProvider.dart';
 import 'package:observer_log/observer/ob_const.dart';
-import 'package:observer_log/observer/ob_utility.dart';
+import 'package:observer_log/observer/observer_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum ObType {
@@ -21,6 +19,22 @@ class Ob {
     File file = await ObserverProvider.op.getLog(time);
     StringBuffer logBuffer = StringBuffer(time.toIso8601String());
     logBuffer.write(",");
+
+    switch(type) {
+      case ObType.log:
+        logBuffer.write("[LOG] ");
+        break;
+      case ObType.err:
+        logBuffer.write("[ERROR] ");
+        break;
+      case ObType.ev:
+        logBuffer.write("[EVENT] ");
+        break;
+      case ObType.tx:
+        logBuffer.write("[TXN] ");
+        break;
+    }
+
     logBuffer.write(message);
     logBuffer.write("\n");
     file.writeAsStringSync(logBuffer.toString(), mode: FileMode.append);
