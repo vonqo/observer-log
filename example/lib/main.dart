@@ -5,14 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:observer_log/ob.dart';
 import 'package:observer_log/observer/ObserverProvider.dart';
 import 'package:observer_log/observer/ob_utility.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+  String logPath = join(appDocumentsDir.path, 'logs/');
+
   Ob.applyConfig(
-      path: appDocumentsDir.path,
+      path: logPath,
       limit: 5
   );
 
