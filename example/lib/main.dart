@@ -1,10 +1,17 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:observer_log/ob.dart';
+import 'package:observer_log/observer/ObserverProvider.dart';
+import 'package:observer_log/observer/ob_utility.dart';
+import 'package:path_provider/path_provider.dart';
 
-import 'package:flutter/services.dart';
-import 'package:observer_log/observer_log.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+  Ob.applyConfig(path: appDocumentsDir.path, limit: 5);
   runApp(const MyApp());
 }
 
@@ -16,34 +23,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _observerLogPlugin = ObserverLog();
+
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _observerLogPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _stressLog() async {
+    setState(() {
+      _isLoading = true;
+    });
+    DateTime startTime = DateTime.now();
+    log('START TIME:');
+    log(startTime.toIso8601String());
+
+    for(int i = 0; i < 10; i++) {
+      DateTime day = startTime.add(Duration(days: i));
+      log('day: ${day.toIso8601String()}');
+      for(int log = 0; log < 1000; log++) {
+        Ob.log("Example of log lorem ipsum $log", time: day);
+      }
+      log('1000 log done');
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
+    DateTime endTime = DateTime.now();
+    log('END TIME:');
+    log(endTime.toIso8601String());
     setState(() {
-      _platformVersion = platformVersion;
+      _isLoading = false;
     });
   }
 
@@ -52,10 +66,22 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Observer Log'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: _isLoading ? null : () {
+                    _stressLog();
+                  },
+                  child: const Text('Log Stress')
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
