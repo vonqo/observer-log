@@ -1,15 +1,27 @@
-# observer_log
+# Observer Log
 
-Adanved android logging
+Event logger based on system day. Simple and easy to extract.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+  Ob.applyConfig(
+      path: '${appDocumentsDir.path}/logs/', // log store directory
+      limit: 5 
+  );
+  
+  runApp(const MyApp());
+}
+```
 
+```dart
+Ob.log("Example of log lorem ipsum");
+```
+
+## Credits
+
+Enkh-Amar.G (vonqo)

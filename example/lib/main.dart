@@ -11,7 +11,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-  Ob.applyConfig(path: appDocumentsDir.path, limit: 5);
+  Ob.applyConfig(
+      path: appDocumentsDir.path,
+      limit: 5
+  );
+
   runApp(const MyApp());
 }
 
