@@ -25,11 +25,11 @@ class ObFile {
 class ObserverProvider {
 
   ObserverProvider._();
-
   static final ObserverProvider op = ObserverProvider._();
 
   SharedPreferences? _prefs;
   ObFile? _obFile;
+  String? _identity;
 
   // ------------------------------------------------------------- //
   Future<SharedPreferences> get prefs async {
@@ -38,6 +38,41 @@ class ObserverProvider {
     }
     _prefs = await SharedPreferences.getInstance();
     return _prefs!;
+  }
+
+  // ------------------------------------------------------------- //
+  Future<String> _getPath() async {
+    final pf = await prefs;
+    String? path = pf.getString(ObConst.PREFS_PATH);
+
+    if(path == null) {
+      throw ObserverException("Observer configuration is not initialized!");
+    }
+
+    return path;
+  }
+
+  // ------------------------------------------------------------- //
+  Future<int> _getLimit() async {
+    final pf = await prefs;
+    int? day = pf.getInt(ObConst.PREFS_LIMIT);
+
+    if(day == null) {
+      throw ObserverException("Observer configuration is not initialized!");
+    }
+
+    return day;
+  }
+
+  // ------------------------------------------------------------- //
+  Future<String> getIdentity() async {
+    final pf = await prefs;
+    String? id = pf.getString(ObConst.PREFS_ID);
+    if(id == null) {
+      throw ObserverException("Observer configuration is not initialized!");
+    }
+
+    return id;
   }
 
   // ------------------------------------------------------------- //
@@ -91,30 +126,5 @@ class ObserverProvider {
     }
     return obFiles;
   }
-
-  // ------------------------------------------------------------- //
-  Future<String> _getPath() async {
-    final pf = await prefs;
-    String? path = pf.getString(ObConst.PREFS_PATH);
-
-    if(path == null) {
-      throw ObserverException("Observer configuration is not initialized!");
-    }
-
-    return path;
-  }
-
-  // ------------------------------------------------------------- //
-  Future<int> _getLimit() async {
-    final pf = await prefs;
-    int? day = pf.getInt(ObConst.PREFS_LIMIT);
-
-    if(day == null) {
-      throw ObserverException("Observer configuration is not initialized!");
-    }
-
-    return day;
-  }
-
 
 }

@@ -15,8 +15,9 @@ void main() async {
   String logPath = join(appDocumentsDir.path, 'logs/');
 
   Ob.applyConfig(
-      path: logPath,
-      limit: 5
+    path: logPath,
+    limit: 5,
+    id: 'example'
   );
 
   runApp(const MyApp());
