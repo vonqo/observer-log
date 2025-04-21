@@ -56,16 +56,19 @@ class ObserverProvider {
       return file;
     }
 
+    file = await file.create(recursive: true);
+    _obFile = ObFile(file: file, date: time);
+
     List<ObFile> obFiles = await getLogFiles();
     obFiles.sort((a,b) => b.date.compareTo(a.date));
     int limit = await _getLimit();
 
     for(int deleteIndex = limit; deleteIndex < obFiles.length; deleteIndex++) {
-      obFiles[deleteIndex].file.deleteSync();
+      if(obFiles[deleteIndex].file.existsSync()) {
+        obFiles[deleteIndex].file.deleteSync();
+      }
     }
 
-    file = await file.create(recursive: true);
-    _obFile = ObFile(file: file, date: time);
     return file;
   }
 
@@ -74,6 +77,7 @@ class ObserverProvider {
     String path = await _getPath();
     List<ObFile> obFiles = [];
     List<FileSystemEntity> files = await Directory(path).list().toList();
+
     for(var fileEntity in files) {
       String name = fileEntity.path.split("/").last;
       if(ObUtility.isLogFile(name)) {

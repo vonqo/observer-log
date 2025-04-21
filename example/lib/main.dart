@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:observer_log/ob.dart';
-import 'package:observer_log/observer/ObserverProvider.dart';
 import 'package:observer_log/observer/ob_utility.dart';
+import 'package:observer_log/observer/observer_provider.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
     for(int i = 0; i < 10; i++) {
       DateTime day = startTime.add(Duration(days: i));
       log('day: ${day.toIso8601String()}');
-      for(int log = 0; log < 1000; log++) {
+      for(int log = 0; log < 5; log++) {
         Ob.log("Example of log lorem ipsum $log", time: day);
       }
       log('1000 log done');
@@ -66,6 +66,13 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _isLoading = false;
     });
+
+    await Future.delayed(Duration(seconds: 2));
+
+    List<ObFile> obfiles = await Ob.listFiles();
+    for(ObFile file in obfiles) {
+      print(file.toString());
+    }
   }
 
   @override
